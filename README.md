@@ -8,9 +8,12 @@ Migrations system for storage structure and database schema.
 - [moro/team-migrations-common](https://github.com/Moro4125/team-migrations-common) >= dev-master
 - [knplabs/console-service-provider](https://github.com/KnpLabs/ConsoleServiceProvider) >= 1.0
 - [silex/silex](https://github.com/silexphp/Silex) >= 1.0
+- [symfony/console](https://github.com/symfony/Console) ~2.6
+- [symfony/event-dispatcher](https://github.com/symfony/EventDispatcher) ~2.0
+- [symfony/finder](https://github.com/symfony/Finder) ~2.0
 
 ## Installation
-    php composer.phar require moro/team-migrations-silex "dev-master"
+    php composer.phar require moro/team-migrations-silex "~1.0"
 
 ## Registration
 ``` php
