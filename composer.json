@@ -1,13 +1,13 @@
 {
   "name": "moro/team-migrations-silex",
   "type": "library",
-  "version": "0.3.0",
+  "version": "1.0.x-dev",
   "license": "MIT",
   "authors": [
     {
       "name": "Andrey Morozkin",
       "email":"andrey.dmitrievich@gmail.com",
-      "role": "Developer"
+      "role": "developer"
     }
   ],
   "require": {

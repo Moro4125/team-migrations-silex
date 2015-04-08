@@ -59,7 +59,7 @@ class TeamMigrationsServiceProvider extends AbstractServiceProvider
 			if (isset($app[self::TEAM_MIGRATIONS_PROVIDERS]))
 			{
 				/** @var AbstractServiceProvider $provider */
-				foreach ($app[self::TEAM_MIGRATIONS_PROVIDERS] as $provider)
+				foreach (array_filter($app[self::TEAM_MIGRATIONS_PROVIDERS]) as $provider)
 				{
 					$provider->register($app);
 				}
