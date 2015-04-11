@@ -9,7 +9,7 @@ use \Moro\Migration\MigrationManager;
 use \Moro\Migration\Provider\AbstractServiceProvider;
 
 /**
- * Class FilesStorageHandlerProvider
+ * Class AbstractHandlerProvider
  * @package Moro\Migration\Provider\Handler
  */
 abstract class AbstractHandlerProvider extends AbstractServiceProvider

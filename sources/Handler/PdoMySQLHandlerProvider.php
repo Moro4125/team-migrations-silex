@@ -9,7 +9,7 @@ use \Moro\Migration\Handler\FilesStorageHandler;
 use \Moro\Migration\Provider\TeamMigrationsServiceProvider;
 
 /**
- * Class FilesStorageHandlerProvider
+ * Class PdoMySQLHandlerProvider
  *
  *     $app->register(new TeamMigrationsServiceProvider(), [
  *       'team-migrations.options' => [
@@ -38,7 +38,7 @@ class PdoMySQLHandlerProvider extends AbstractHandlerProvider
 	/**
 	 * @param Application $app
 	 * @param Pimple $options
-	 * @return \Moro\Migration\Handler\AbstractHandler
+	 * @return \Moro\Migration\Handler\PdoMySQLHandler
 	 */
 	protected function _register(Application $app, Pimple $options)
 	{

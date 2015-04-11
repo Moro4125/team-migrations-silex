@@ -38,7 +38,7 @@ class FilesStorageHandlerProvider extends AbstractHandlerProvider
 	/**
 	 * @param Application $app
 	 * @param Pimple $options
-	 * @return \Moro\Migration\Handler\AbstractHandler
+	 * @return \Moro\Migration\Handler\FilesStorageHandler
 	 */
 	protected function _register(Application $app, Pimple $options)
 	{
