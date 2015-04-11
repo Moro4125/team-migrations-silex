@@ -16,11 +16,11 @@ use \Moro\Migration\Command\MigrationsStatus;
  * Class TeamMigrationsServiceProvider
  *
  *     $app->register(new TeamMigrationsServiceProvider(), [
- *       'team.migrations.options' => [
+ *       'team-migrations.options' => [
  *         'environment' => 'development',
  *         'path.project' => dirname(__DIR__),
  *       ],
- *       'team.migrations.providers' => [
+ *       'team-migrations.providers' => [
  *       ],
  *     ]);
  *

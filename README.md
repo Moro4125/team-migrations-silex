@@ -20,12 +20,12 @@ Migrations system for storage structure and database schema.
 
     <?php // bootstrap.php
     $app->register(new TeamMigrationsServiceProvider(), [
-      'team.migrations.options' => [
+      'team-migrations.options' => [
         'environment' => 'development',
         'path.project' => dirname(__DIR__),
         /* ... */
       ],
-      'team.migrations.providers' => [
+      'team-migrations.providers' => [
         new FilesStorageHandlerProvider(),
         /* ... */
       ],

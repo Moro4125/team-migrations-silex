@@ -12,10 +12,10 @@ use \Moro\Migration\Provider\TeamMigrationsServiceProvider;
  * Class FilesStorageHandlerProvider
  *
  *     $app->register(new TeamMigrationsServiceProvider(), [
- *       'team.migrations.options' => [
+ *       'team-migrations.options' => [
  *         'service.pdo' => 'db.connection',
  *       ],
- *       'team.migrations.providers' => [
+ *       'team-migrations.providers' => [
  *         new PdoMySQLHandlerProvider(),
  *       ],
  *     ]);
