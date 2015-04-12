@@ -29,6 +29,8 @@ use \Moro\Migration\Command\MigrationsStatus;
  */
 class TeamMigrationsServiceProvider extends AbstractServiceProvider
 {
+	const VERSION = '1.3.0';
+
 	const OPTION_ENVIRONMENT    = 'environment';
 	const OPTION_CLASS_MANAGER  = 'class.manager';
 	const OPTION_VALIDATION_KEY = 'validation.key';
