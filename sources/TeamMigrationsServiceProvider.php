@@ -9,6 +9,7 @@ use \Symfony\Component\EventDispatcher\EventDispatcher;
 use \Knp\Console\ConsoleEvents;
 use \Knp\Console\ConsoleEvent;
 use \Moro\Migration\MigrationManager;
+use \Moro\Migration\Command\MigrationsCreate;
 use \Moro\Migration\Command\MigrationsMigrate;
 use \Moro\Migration\Command\MigrationsStatus;
 
@@ -100,8 +101,9 @@ class TeamMigrationsServiceProvider extends AbstractServiceProvider
 	{
 		$dispatcher->addListener(ConsoleEvents::INIT, function(ConsoleEvent $event) use ($app) {
 			$event->getApplication()->addCommands([
-				new MigrationsMigrate ($app[self::TEAM_MIGRATIONS]),
 				new MigrationsStatus  ($app[self::TEAM_MIGRATIONS]),
+				new MigrationsCreate  ($app[self::TEAM_MIGRATIONS]),
+				new MigrationsMigrate ($app[self::TEAM_MIGRATIONS]),
 			]);
 		});
 	}
