@@ -37,9 +37,10 @@ class PdoMySQLHandlerProvider extends AbstractHandlerProvider
 	/**
 	 * @param Application $app
 	 * @param Pimple $options
+	 * @param null|string $name
 	 * @return \Moro\Migration\Handler\PdoMySQLHandler
 	 */
-	protected function _register(Application $app, Pimple $options)
+	protected function _register(Application $app, Pimple $options, $name = null)
 	{
 		$service = is_string($options[self::OPTION_SERVICE_PDO])
 			? $app[$options[self::OPTION_SERVICE_PDO]]
@@ -47,7 +48,7 @@ class PdoMySQLHandlerProvider extends AbstractHandlerProvider
 
 		/** @var \Moro\Migration\Handler\PdoMySQLHandler $pdoMySQLHandler */
 		$classPdoMySQL = $options[self::OPTION_CLASS_PDO_MYSQL];
-		$pdoMySQLHandler = new $classPdoMySQL;
+		$pdoMySQLHandler = new $classPdoMySQL($name);
 		$pdoMySQLHandler->setConnection($service);
 
 		return $pdoMySQLHandler;

@@ -7,6 +7,7 @@ use \Pimple;
 use \Silex\Application;
 use \Moro\Migration\MigrationManager;
 use \Moro\Migration\Provider\AbstractServiceProvider;
+use \RuntimeException;
 
 /**
  * Class AbstractHandlerProvider
@@ -14,10 +15,25 @@ use \Moro\Migration\Provider\AbstractServiceProvider;
  */
 abstract class AbstractHandlerProvider extends AbstractServiceProvider
 {
+	const ERROR_SERVICE_ALREADY_EXISTS = 'Error, service "%1$s" already exists!';
+
 	/**
 	 * @var array
 	 */
 	protected $_defaultOptions = [];
+
+	/**
+	 * @var string
+	 */
+	protected $_name;
+
+	/**
+	 * @param null|string $name
+	 */
+	public function __construct($name = null)
+	{
+		is_string($name) && $this->_name = $name;
+	}
 
 	/**
 	 * @param Application $app
@@ -30,11 +46,32 @@ abstract class AbstractHandlerProvider extends AbstractServiceProvider
 		/** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
 		$dispatcher = $app['dispatcher'];
 		$dispatcher->addListener(MigrationManager::EVENT_INIT_SERVICE, function($event) use ($app) {
+			/** @var Pimple $config */
+			$config = clone $app[self::TEAM_MIGRATIONS_CONFIG];
+
+			if ($this->_name)
+			{
+				$optionsKey = str_replace('.', '.'.$this->_name.'.', self::TEAM_MIGRATIONS_OPTIONS);
+
+				foreach (isset($app[$optionsKey]) ? $app[$optionsKey] : [] as $key => $value)
+				{
+					$config[$key] = $value;
+				}
+
+				unset($app[$optionsKey]);
+			}
+
+			$handler = $this->_register($app, $config, $this->_name ? self::TEAM_MIGRATIONS.'.'.$this->_name : null);
+
+			if (isset($app[$handler->getServiceName()]))
+			{
+				throw new RuntimeException(sprintf(self::ERROR_SERVICE_ALREADY_EXISTS, $handler->getServiceName()));
+			}
+
 			/** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
 			$dispatcher = $app['dispatcher'];
-			$handler = $this->_register($app, $app[self::TEAM_MIGRATIONS_CONFIG]);
-
 			$dispatcher->addSubscriber($handler);
+
 			$app[$handler->getServiceName()] = $handler;
 			$handler->update($event);
 		});
@@ -52,7 +89,8 @@ abstract class AbstractHandlerProvider extends AbstractServiceProvider
 	/**
 	 * @param Application $app
 	 * @param Pimple $options
+	 * @param null|string $name
 	 * @return \Moro\Migration\Handler\AbstractHandler
 	 */
-	abstract protected function _register(Application $app, Pimple $options);
+	abstract protected function _register(Application $app, Pimple $options, $name = null);
 }

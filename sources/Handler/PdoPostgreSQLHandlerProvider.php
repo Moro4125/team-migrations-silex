@@ -37,9 +37,10 @@ class PdoPostgreSQLHandlerProvider extends AbstractHandlerProvider
 	/**
 	 * @param Application $app
 	 * @param Pimple $options
+	 * @param null|string $name
 	 * @return \Moro\Migration\Handler\PdoPostgreSQLHandler
 	 */
-	protected function _register(Application $app, Pimple $options)
+	protected function _register(Application $app, Pimple $options, $name = null)
 	{
 		$service = is_string($options[self::OPTION_SERVICE_PDO])
 			? $app[$options[self::OPTION_SERVICE_PDO]]
@@ -47,7 +48,7 @@ class PdoPostgreSQLHandlerProvider extends AbstractHandlerProvider
 
 		/** @var \Moro\Migration\Handler\PdoPostgreSQLHandler $pdoPostgreSQLHandler */
 		$classPdoPostgreSQL = $options[self::OPTION_CLASS_PDO_POSTGRESQL];
-		$pdoPostgreSQLHandler = new $classPdoPostgreSQL;
+		$pdoPostgreSQLHandler = new $classPdoPostgreSQL($name);
 		$pdoPostgreSQLHandler->setConnection($service);
 
 		return $pdoPostgreSQLHandler;

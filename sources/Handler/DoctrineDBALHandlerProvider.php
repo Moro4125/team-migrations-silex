@@ -37,9 +37,10 @@ class DoctrineDBALHandlerProvider extends AbstractHandlerProvider
 	/**
 	 * @param Application $app
 	 * @param Pimple $options
+	 * @param null|string $name
 	 * @return \Moro\Migration\Handler\DoctrineDBALHandler
 	 */
-	protected function _register(Application $app, Pimple $options)
+	protected function _register(Application $app, Pimple $options, $name = null)
 	{
 		$service = is_string($options[self::OPTION_SERVICE_DOCTRINE_CONNECTION])
 			? $app[$options[self::OPTION_SERVICE_DOCTRINE_CONNECTION]]
@@ -47,7 +48,7 @@ class DoctrineDBALHandlerProvider extends AbstractHandlerProvider
 
 		/** @var \Moro\Migration\Handler\DoctrineDBALHandler $doctrineDBALHandler */
 		$classDoctrineDBALHandler = $options[self::OPTION_CLASS_DOCTRINE_DBAL];
-		$doctrineDBALHandler = new $classDoctrineDBALHandler;
+		$doctrineDBALHandler = new $classDoctrineDBALHandler($name);
 		$doctrineDBALHandler->setConnection($service);
 
 		return $doctrineDBALHandler;

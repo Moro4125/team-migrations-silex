@@ -37,9 +37,10 @@ class PdoSQLiteHandlerProvider extends AbstractHandlerProvider
 	/**
 	 * @param Application $app
 	 * @param Pimple $options
+	 * @param null|string $name
 	 * @return \Moro\Migration\Handler\PdoSQLiteHandler
 	 */
-	protected function _register(Application $app, Pimple $options)
+	protected function _register(Application $app, Pimple $options, $name = null)
 	{
 		$service = is_string($options[self::OPTION_SERVICE_PDO])
 			? $app[$options[self::OPTION_SERVICE_PDO]]
@@ -47,7 +48,7 @@ class PdoSQLiteHandlerProvider extends AbstractHandlerProvider
 
 		/** @var \Moro\Migration\Handler\PdoSQLiteHandler $pdoSQLiteHandler */
 		$classPdoSQLite = $options[self::OPTION_CLASS_PDO_SQLITE];
-		$pdoSQLiteHandler = new $classPdoSQLite;
+		$pdoSQLiteHandler = new $classPdoSQLite($name);
 		$pdoSQLiteHandler->setConnection($service);
 
 		return $pdoSQLiteHandler;

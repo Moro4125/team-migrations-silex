@@ -38,9 +38,10 @@ class FilesStorageHandlerProvider extends AbstractHandlerProvider
 	/**
 	 * @param Application $app
 	 * @param Pimple $options
+	 * @param null|string $name
 	 * @return \Moro\Migration\Handler\FilesStorageHandler
 	 */
-	protected function _register(Application $app, Pimple $options)
+	protected function _register(Application $app, Pimple $options, $name = null)
 	{
 		if (($storagePath = $options[self::OPTION_PATH_STORAGE]) && $storagePath[0] != '/' && $storagePath[1] != ':')
 		{
@@ -49,7 +50,7 @@ class FilesStorageHandlerProvider extends AbstractHandlerProvider
 
 		/** @var \Moro\Migration\Handler\FilesStorageHandler $filesStorageHandler */
 		$classFilesStorage = $options[self::OPTION_CLASS_FILES_STORAGE];
-		$filesStorageHandler = new $classFilesStorage;
+		$filesStorageHandler = new $classFilesStorage($name);
 		$filesStorageHandler->setStoragePath($storagePath);
 
 		return $filesStorageHandler;
