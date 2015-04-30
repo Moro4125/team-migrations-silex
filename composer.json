@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-    "php": ">=5.5.16",
+    "php": ">=5.5",
     "moro/team-migrations-common": "dev-master",
     "knplabs/console-service-provider": "~1.0"
   },
