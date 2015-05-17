@@ -29,7 +29,7 @@ use \Moro\Migration\Command\MigrationsStatus;
  */
 class TeamMigrationsServiceProvider extends AbstractServiceProvider
 {
-	const VERSION = '1.4.0-dev';
+	const VERSION = '1.4.0';
 
 	const OPTION_ENVIRONMENT    = 'environment';
 	const OPTION_CLASS_MANAGER  = 'class.manager';
