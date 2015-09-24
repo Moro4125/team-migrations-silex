@@ -13,7 +13,7 @@ Migrations system for storage structure and database schema.
 - [symfony/finder](https://github.com/symfony/Finder) ~2.0
 
 ## Installation
-    php composer.phar require moro/team-migrations-silex "dev-master"
+    php composer.phar require moro/team-migrations-silex "~1.5"
 
 ## Registration
 ``` php

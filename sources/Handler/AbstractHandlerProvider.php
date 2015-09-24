@@ -41,7 +41,7 @@ abstract class AbstractHandlerProvider extends AbstractServiceProvider
 	final public function register(Application $app)
 	{
 		$options = isset($app[self::TEAM_MIGRATIONS_DEFAULT]) ? $app[self::TEAM_MIGRATIONS_DEFAULT] : [];
-		$app[self::TEAM_MIGRATIONS_DEFAULT] = array_merge($options, $this->_getDefaultOptions($app, $options));
+		$app[self::TEAM_MIGRATIONS_DEFAULT] = array_merge($options, $this->_getDefaultOptions($app));
 
 		/** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
 		$dispatcher = $app['dispatcher'];
