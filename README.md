@@ -5,7 +5,7 @@ Migrations system for storage structure and database schema.
 
 ## Requirements
 - PHP >= 5.5
-- [moro/team-migrations-common](https://github.com/Moro4125/team-migrations-common) = dev-master
+- [moro/team-migrations-common](https://github.com/Moro4125/team-migrations-common) ~ 1.6
 - [knplabs/console-service-provider](https://github.com/KnpLabs/ConsoleServiceProvider) ~ 1.0
 - [silex/silex](https://github.com/silexphp/Silex) ~ 1.2
 - [symfony/console](https://github.com/symfony/Console) ~2.6
@@ -13,7 +13,7 @@ Migrations system for storage structure and database schema.
 - [symfony/finder](https://github.com/symfony/Finder) ~2.0
 
 ## Installation
-    php composer.phar require moro/team-migrations-silex "~1.5"
+    php composer.phar require moro/team-migrations-silex "~1.6"
 
 ## Registration
 ``` php

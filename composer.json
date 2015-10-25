@@ -1,7 +1,7 @@
 {
   "name": "moro/team-migrations-silex",
   "type": "library",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "license": "MIT",
   "authors": [
     {
@@ -12,7 +12,7 @@
   ],
   "require": {
     "php": ">=5.5",
-    "moro/team-migrations-common": ">=1.5 <1.6",
+    "moro/team-migrations-common": ">=1.6 <1.7",
     "knplabs/console-service-provider": "~1.0"
   },
   "require-dev": {
