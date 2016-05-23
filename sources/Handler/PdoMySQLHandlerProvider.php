@@ -3,9 +3,9 @@
  * Class PdoMySQLHandlerProvider
  */
 namespace Moro\Migration\Provider\Handler;
-use \Pimple;
-use \Silex\Application;
-use \Moro\Migration\Handler\PdoMySQLHandler;
+use Pimple\Container;
+use Silex\Application;
+use Moro\Migration\Handler\PdoMySQLHandler;
 
 /**
  * Class PdoMySQLHandlerProvider
@@ -36,11 +36,11 @@ class PdoMySQLHandlerProvider extends AbstractHandlerProvider
 
 	/**
 	 * @param Application $app
-	 * @param Pimple $options
+	 * @param Container $options
 	 * @param null|string $name
 	 * @return \Moro\Migration\Handler\PdoMySQLHandler
 	 */
-	protected function _register(Application $app, Pimple $options, $name = null)
+	protected function _register(Application $app, Container $options, $name = null)
 	{
 		$service = is_string($options[self::OPTION_SERVICE_PDO])
 			? $app[$options[self::OPTION_SERVICE_PDO]]

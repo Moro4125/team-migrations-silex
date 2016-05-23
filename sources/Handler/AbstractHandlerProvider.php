@@ -3,10 +3,10 @@
  * Class AbstractHandlerProvider
  */
 namespace Moro\Migration\Provider\Handler;
-use \Pimple;
-use \Silex\Application;
-use \Moro\Migration\MigrationManager;
-use \Moro\Migration\Provider\AbstractServiceProvider;
+use Pimple\Container;
+use Silex\Application;
+use Moro\Migration\MigrationManager;
+use Moro\Migration\Provider\AbstractServiceProvider;
 use \RuntimeException;
 
 /**
@@ -46,7 +46,7 @@ abstract class AbstractHandlerProvider extends AbstractServiceProvider
 		/** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
 		$dispatcher = $app['dispatcher'];
 		$dispatcher->addListener(MigrationManager::EVENT_INIT_SERVICE, function($event) use ($app) {
-			/** @var Pimple $config */
+			/** @var Container $config */
 			$config = clone $app[self::TEAM_MIGRATIONS_CONFIG];
 
 			if ($this->_name)
@@ -88,9 +88,9 @@ abstract class AbstractHandlerProvider extends AbstractServiceProvider
 
 	/**
 	 * @param Application $app
-	 * @param Pimple $options
+	 * @param Container $options
 	 * @param null|string $name
 	 * @return \Moro\Migration\Handler\AbstractHandler
 	 */
-	abstract protected function _register(Application $app, Pimple $options, $name = null);
+	abstract protected function _register(Application $app, Container $options, $name = null);
 }

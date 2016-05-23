@@ -3,10 +3,10 @@
  * Class FilesStorageHandlerProvider
  */
 namespace Moro\Migration\Provider\Handler;
-use \Pimple;
-use \Silex\Application;
-use \Moro\Migration\Handler\FilesStorageHandler;
-use \Moro\Migration\Provider\TeamMigrationsServiceProvider;
+use Pimple\Container;
+use Silex\Application;
+use Moro\Migration\Handler\FilesStorageHandler;
+use Moro\Migration\Provider\TeamMigrationsServiceProvider;
 
 /**
  * Class FilesStorageHandlerProvider
@@ -37,11 +37,11 @@ class FilesStorageHandlerProvider extends AbstractHandlerProvider
 
 	/**
 	 * @param Application $app
-	 * @param Pimple $options
+	 * @param Container $options
 	 * @param null|string $name
 	 * @return \Moro\Migration\Handler\FilesStorageHandler
 	 */
-	protected function _register(Application $app, Pimple $options, $name = null)
+	protected function _register(Application $app, Container $options, $name = null)
 	{
 		if (($storagePath = $options[self::OPTION_PATH_STORAGE]) && $storagePath[0] != '/' && $storagePath[1] != ':')
 		{

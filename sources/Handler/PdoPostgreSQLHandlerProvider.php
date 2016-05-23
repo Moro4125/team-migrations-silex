@@ -3,9 +3,9 @@
  * Class PdoPostgreSQLHandlerProvider
  */
 namespace Moro\Migration\Provider\Handler;
-use \Pimple;
-use \Silex\Application;
-use \Moro\Migration\Handler\PdoPostgreSQLHandler;
+use Pimple\Container;
+use Silex\Application;
+use Moro\Migration\Handler\PdoPostgreSQLHandler;
 
 /**
  * Class PdoPostgreSQLHandlerProvider
@@ -36,11 +36,11 @@ class PdoPostgreSQLHandlerProvider extends AbstractHandlerProvider
 
 	/**
 	 * @param Application $app
-	 * @param Pimple $options
+	 * @param Container $options
 	 * @param null|string $name
 	 * @return \Moro\Migration\Handler\PdoPostgreSQLHandler
 	 */
-	protected function _register(Application $app, Pimple $options, $name = null)
+	protected function _register(Application $app, Container $options, $name = null)
 	{
 		$service = is_string($options[self::OPTION_SERVICE_PDO])
 			? $app[$options[self::OPTION_SERVICE_PDO]]

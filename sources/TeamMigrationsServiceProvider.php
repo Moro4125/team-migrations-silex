@@ -3,15 +3,14 @@
  * Class TeamMigrationsServiceProvider
  */
 namespace Moro\Migration\Provider;
-use \Pimple;
-use \Silex\Application;
-use \Symfony\Component\EventDispatcher\EventDispatcher;
-use \Knp\Console\ConsoleEvents;
-use \Knp\Console\ConsoleEvent;
-use \Moro\Migration\MigrationManager;
-use \Moro\Migration\Command\MigrationsCreate;
-use \Moro\Migration\Command\MigrationsMigrate;
-use \Moro\Migration\Command\MigrationsStatus;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Application;
+use Silex\Api\BootableProviderInterface;
+use Moro\Migration\MigrationManager;
+use Moro\Migration\Command\MigrationsCreate;
+use Moro\Migration\Command\MigrationsMigrate;
+use Moro\Migration\Command\MigrationsStatus;
 
 /**
  * Class TeamMigrationsServiceProvider
@@ -27,9 +26,9 @@ use \Moro\Migration\Command\MigrationsStatus;
  *
  * @package Moro\Migration\Provider
  */
-class TeamMigrationsServiceProvider extends AbstractServiceProvider
+class TeamMigrationsServiceProvider extends AbstractServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
-	const VERSION = '1.6.0';
+	const VERSION = '2.0.0';
 
 	const OPTION_ENVIRONMENT    = 'environment';
 	const OPTION_CLASS_MANAGER  = 'class.manager';
@@ -37,9 +36,9 @@ class TeamMigrationsServiceProvider extends AbstractServiceProvider
 	const OPTION_PATH_PROJECT   = 'path.project';
 
 	/**
-	 * @param Application $app
+	 * @param Container $app
 	 */
-	public function register(Application $app)
+	public function register(Container $app)
 	{
 		$app[self::TEAM_MIGRATIONS_OPTIONS] = [];
 
@@ -49,19 +48,19 @@ class TeamMigrationsServiceProvider extends AbstractServiceProvider
 			self::OPTION_VALIDATION_KEY => '',
 		];
 
-		$app[self::TEAM_MIGRATIONS_CONFIG] = $app->share(function() use ($app) {
+		$app[self::TEAM_MIGRATIONS_CONFIG] = function() use ($app) {
 			$options = array_merge($app[self::TEAM_MIGRATIONS_DEFAULT], $app[self::TEAM_MIGRATIONS_OPTIONS]);
 
 			unset($app[self::TEAM_MIGRATIONS_DEFAULT]);
 			unset($app[self::TEAM_MIGRATIONS_OPTIONS]);
 
-			return new Pimple($options);
-		});
+			return new Container($options);
+		};
 
-		$app[self::TEAM_MIGRATIONS] = $app->share(function() use ($app) {
+		$app[self::TEAM_MIGRATIONS] = function() use ($app) {
 			if (isset($app[self::TEAM_MIGRATIONS_PROVIDERS]))
 			{
-				/** @var AbstractServiceProvider $provider */
+				/** @var ServiceProviderInterface $provider */
 				foreach (array_filter($app[self::TEAM_MIGRATIONS_PROVIDERS]) as $provider)
 				{
 					$provider->register($app);
@@ -90,23 +89,28 @@ class TeamMigrationsServiceProvider extends AbstractServiceProvider
 			}
 
 			return $manager;
-		});
-
-		$this->_addListener($app, $app['dispatcher']);
+		};
 	}
 
 	/**
+	 * Bootstraps the application.
+	 *
+	 * This method is called after all services are registered
+	 * and should be used for "dynamic" configuration (whenever
+	 * a service must be requested).
+	 *
 	 * @param Application $app
-	 * @param EventDispatcher $dispatcher
 	 */
-	protected function _addListener(Application $app, EventDispatcher $dispatcher)
+	public function boot(Application $app)
 	{
-		$dispatcher->addListener(ConsoleEvents::INIT, function(ConsoleEvent $event) use ($app) {
-			$event->getApplication()->addCommands([
+		/** @var \Symfony\Component\Console\Application $console */
+		if (php_sapi_name() === 'cli' && isset($app['console']) && $console = $app['console'])
+		{
+			$console->addCommands([
 				new MigrationsStatus  ($app[self::TEAM_MIGRATIONS]),
 				new MigrationsCreate  ($app[self::TEAM_MIGRATIONS]),
 				new MigrationsMigrate ($app[self::TEAM_MIGRATIONS]),
 			]);
-		});
+		}
 	}
 }

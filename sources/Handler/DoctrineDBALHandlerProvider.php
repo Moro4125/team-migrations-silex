@@ -3,9 +3,9 @@
  * Class DoctrineDBALHandlerProvider
  */
 namespace Moro\Migration\Provider\Handler;
-use \Pimple;
-use \Silex\Application;
-use \Moro\Migration\Handler\DoctrineDBALHandler;
+use Pimple\Container;
+use Silex\Application;
+use Moro\Migration\Handler\DoctrineDBALHandler;
 
 /**
  * Class DoctrineDBALHandlerProvider
@@ -36,11 +36,11 @@ class DoctrineDBALHandlerProvider extends AbstractHandlerProvider
 
 	/**
 	 * @param Application $app
-	 * @param Pimple $options
+	 * @param Container $options
 	 * @param null|string $name
 	 * @return \Moro\Migration\Handler\DoctrineDBALHandler
 	 */
-	protected function _register(Application $app, Pimple $options, $name = null)
+	protected function _register(Application $app, Container $options, $name = null)
 	{
 		$service = is_string($options[self::OPTION_SERVICE_DOCTRINE_CONNECTION])
 			? $app[$options[self::OPTION_SERVICE_DOCTRINE_CONNECTION]]

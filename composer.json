@@ -1,7 +1,7 @@
 {
   "name": "moro/team-migrations-silex",
   "type": "library",
-  "version": "1.6.0",
+  "version": "2.0.0",
   "license": "MIT",
   "authors": [
     {
@@ -12,11 +12,11 @@
   ],
   "require": {
     "php": ">=5.5",
-    "moro/team-migrations-common": ">=1.6 <1.7",
-    "knplabs/console-service-provider": "~1.0"
+    "moro/team-migrations-common": ">=1.6.1 <1.7"
   },
   "require-dev": {
-    "silex/silex": "~1.2"
+    "silex/silex": "~2.0",
+    "doctrine/dbal": "~2.5"
   },
   "autoload": {
     "psr-4": { "Moro\\Migration\\Provider\\": "sources/" }
