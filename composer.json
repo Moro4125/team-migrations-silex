@@ -2,7 +2,7 @@
   "name": "moro/team-migrations-silex",
   "type": "library",
   "description": "Integration project for team-migrations package",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "license": "MIT",
   "authors": [
     {
@@ -13,7 +13,7 @@
   ],
   "require": {
     "php": ">=7.1",
-    "moro/team-migrations-common": ">=1.7.1 <1.8"
+    "moro/team-migrations-common": ">=1.7.2 <1.8"
   },
   "require-dev": {
     "silex/silex": "~2.0",

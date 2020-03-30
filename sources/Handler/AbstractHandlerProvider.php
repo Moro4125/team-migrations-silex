@@ -40,10 +40,41 @@ abstract class AbstractHandlerProvider extends AbstractServiceProvider implement
     }
 
     /**
-     * @param Container $app
+     * @param Container|Application $app
      */
     final public function register(Container $app)
     {
+        $options = isset($app[self::TEAM_MIGRATIONS_DEFAULT]) ? $app[self::TEAM_MIGRATIONS_DEFAULT] : [];
+        $app[self::TEAM_MIGRATIONS_DEFAULT] = array_merge($options, $this->_getDefaultOptions($app));
+
+        /** @var EventDispatcherInterface $dispatcher */
+        $dispatcher = $app['dispatcher'];
+        $dispatcher->addListener(MigrationManager::EVENT_INIT_SERVICE, function ($event) use ($app, $dispatcher) {
+            /** @var Container $config */
+            $config = clone $app[self::TEAM_MIGRATIONS_CONFIG];
+
+            if ($this->_name) {
+                $optionsKey = str_replace('.', '.' . $this->_name . '.', self::TEAM_MIGRATIONS_OPTIONS);
+
+                foreach (isset($app[$optionsKey]) ? $app[$optionsKey] : [] as $key => $value) {
+                    $config[$key] = $value;
+                }
+
+                unset($app[$optionsKey]);
+            }
+
+            $handler = $this->_register($app, $config,
+                $this->_name ? self::TEAM_MIGRATIONS . '.' . $this->_name : null);
+
+            if (isset($app[$handler->getServiceName()])) {
+                throw new RuntimeException(sprintf(self::ERROR_SERVICE_ALREADY_EXISTS, $handler->getServiceName()));
+            }
+
+            $dispatcher->addSubscriber($handler);
+
+            $app[$handler->getServiceName()] = $handler;
+            $handler->update($event);
+        });
     }
 
     /**
@@ -51,39 +82,6 @@ abstract class AbstractHandlerProvider extends AbstractServiceProvider implement
      */
     final public function boot(Application $app)
     {
-        $options = isset($app[self::TEAM_MIGRATIONS_DEFAULT]) ? $app[self::TEAM_MIGRATIONS_DEFAULT] : [];
-        $app[self::TEAM_MIGRATIONS_DEFAULT] = array_merge($options, $this->_getDefaultOptions($app));
-
-        $app->extend('dispatcher', function (EventDispatcherInterface $dispatcher) use ($app) {
-            $dispatcher->addListener(MigrationManager::EVENT_INIT_SERVICE, function ($event) use ($app) {
-                /** @var Container $config */
-                $config = clone $app[self::TEAM_MIGRATIONS_CONFIG];
-
-                if ($this->_name) {
-                    $optionsKey = str_replace('.', '.' . $this->_name . '.', self::TEAM_MIGRATIONS_OPTIONS);
-
-                    foreach (isset($app[$optionsKey]) ? $app[$optionsKey] : [] as $key => $value) {
-                        $config[$key] = $value;
-                    }
-
-                    unset($app[$optionsKey]);
-                }
-
-                $handler = $this->_register($app, $config,
-                    $this->_name ? self::TEAM_MIGRATIONS . '.' . $this->_name : null);
-
-                if (isset($app[$handler->getServiceName()])) {
-                    throw new RuntimeException(sprintf(self::ERROR_SERVICE_ALREADY_EXISTS, $handler->getServiceName()));
-                }
-
-                /** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
-                $dispatcher = $app['dispatcher'];
-                $dispatcher->addSubscriber($handler);
-
-                $app[$handler->getServiceName()] = $handler;
-                $handler->update($event);
-            });
-        });
     }
 
     /**
