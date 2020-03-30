@@ -3,94 +3,105 @@
  * Class AbstractHandlerProvider
  */
 namespace Moro\Migration\Provider\Handler;
-use Pimple\Container;
-use Silex\Application;
+
 use Moro\Migration\MigrationManager;
 use Moro\Migration\Provider\AbstractServiceProvider;
-use \RuntimeException;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use RuntimeException;
+use Silex\Api\BootableProviderInterface;
+use Silex\Application;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class AbstractHandlerProvider
  * @package Moro\Migration\Provider\Handler
  */
-abstract class AbstractHandlerProvider extends AbstractServiceProvider
+abstract class AbstractHandlerProvider extends AbstractServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
-	const ERROR_SERVICE_ALREADY_EXISTS = 'Error, service "%1$s" already exists!';
+    const ERROR_SERVICE_ALREADY_EXISTS = 'Error, service "%1$s" already exists!';
 
-	/**
-	 * @var array
-	 */
-	protected $_defaultOptions = [];
+    /**
+     * @var array
+     */
+    protected $_defaultOptions = [];
 
-	/**
-	 * @var string
-	 */
-	protected $_name;
+    /**
+     * @var string
+     */
+    protected $_name;
 
-	/**
-	 * @param null|string $name
-	 */
-	public function __construct($name = null)
-	{
-		is_string($name) && $this->_name = $name;
-	}
+    /**
+     * @param null|string $name
+     */
+    public function __construct($name = null)
+    {
+        is_string($name) && $this->_name = $name;
+    }
 
-	/**
-	 * @param Application $app
-	 */
-	final public function register(Application $app)
-	{
-		$options = isset($app[self::TEAM_MIGRATIONS_DEFAULT]) ? $app[self::TEAM_MIGRATIONS_DEFAULT] : [];
-		$app[self::TEAM_MIGRATIONS_DEFAULT] = array_merge($options, $this->_getDefaultOptions($app));
+    /**
+     * @param Container $app
+     */
+    final public function register(Container $app)
+    {
+    }
 
-		/** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
-		$dispatcher = $app['dispatcher'];
-		$dispatcher->addListener(MigrationManager::EVENT_INIT_SERVICE, function($event) use ($app) {
-			/** @var Container $config */
-			$config = clone $app[self::TEAM_MIGRATIONS_CONFIG];
+    /**
+     * @param Application $app
+     */
+    final public function boot(Application $app)
+    {
+        $options = isset($app[self::TEAM_MIGRATIONS_DEFAULT]) ? $app[self::TEAM_MIGRATIONS_DEFAULT] : [];
+        $app[self::TEAM_MIGRATIONS_DEFAULT] = array_merge($options, $this->_getDefaultOptions($app));
 
-			if ($this->_name)
-			{
-				$optionsKey = str_replace('.', '.'.$this->_name.'.', self::TEAM_MIGRATIONS_OPTIONS);
+        $app->extend('dispatcher', function (EventDispatcherInterface $dispatcher) use ($app) {
+            $dispatcher->addListener(MigrationManager::EVENT_INIT_SERVICE, function ($event) use ($app) {
+                /** @var Container $config */
+                $config = clone $app[self::TEAM_MIGRATIONS_CONFIG];
 
-				foreach (isset($app[$optionsKey]) ? $app[$optionsKey] : [] as $key => $value)
-				{
-					$config[$key] = $value;
-				}
+                if ($this->_name) {
+                    $optionsKey = str_replace('.', '.' . $this->_name . '.', self::TEAM_MIGRATIONS_OPTIONS);
 
-				unset($app[$optionsKey]);
-			}
+                    foreach (isset($app[$optionsKey]) ? $app[$optionsKey] : [] as $key => $value) {
+                        $config[$key] = $value;
+                    }
 
-			$handler = $this->_register($app, $config, $this->_name ? self::TEAM_MIGRATIONS.'.'.$this->_name : null);
+                    unset($app[$optionsKey]);
+                }
 
-			if (isset($app[$handler->getServiceName()]))
-			{
-				throw new RuntimeException(sprintf(self::ERROR_SERVICE_ALREADY_EXISTS, $handler->getServiceName()));
-			}
+                $handler = $this->_register($app, $config,
+                    $this->_name ? self::TEAM_MIGRATIONS . '.' . $this->_name : null);
 
-			/** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
-			$dispatcher = $app['dispatcher'];
-			$dispatcher->addSubscriber($handler);
+                if (isset($app[$handler->getServiceName()])) {
+                    throw new RuntimeException(sprintf(self::ERROR_SERVICE_ALREADY_EXISTS, $handler->getServiceName()));
+                }
 
-			$app[$handler->getServiceName()] = $handler;
-			$handler->update($event);
-		});
-	}
+                /** @var \Symfony\Component\EventDispatcher\EventDispatcher $dispatcher */
+                $dispatcher = $app['dispatcher'];
+                $dispatcher->addSubscriber($handler);
 
-	/**
-	 * @param Application $app
-	 * @return array
-	 */
-	protected function _getDefaultOptions(/** @noinspection PhpUnusedParameterInspection */ Application $app)
-	{
-		return $this->_defaultOptions;
-	}
+                $app[$handler->getServiceName()] = $handler;
+                $handler->update($event);
+            });
+        });
+    }
 
-	/**
-	 * @param Application $app
-	 * @param Container $options
-	 * @param null|string $name
-	 * @return \Moro\Migration\Handler\AbstractHandler
-	 */
-	abstract protected function _register(Application $app, Container $options, $name = null);
+    /**
+     * @param Container $app
+     * @return array
+     */
+    protected function _getDefaultOptions(
+        /** @noinspection PhpUnusedParameterInspection */
+        Container $app
+    ) {
+        return $this->_defaultOptions;
+    }
+
+    /**
+     * @param Application $app
+     * @param Container $options
+     * @param null|string $name
+     * @return \Moro\Migration\Handler\AbstractHandler
+     */
+    abstract protected function _register(Application $app, Container $options, $name = null);
 }

@@ -28,7 +28,7 @@ use Moro\Migration\Command\MigrationsStatus;
  */
 class TeamMigrationsServiceProvider extends AbstractServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
-	const VERSION = '2.0.0';
+	const VERSION = '2.1.0';
 
 	const OPTION_ENVIRONMENT    = 'environment';
 	const OPTION_CLASS_MANAGER  = 'class.manager';
